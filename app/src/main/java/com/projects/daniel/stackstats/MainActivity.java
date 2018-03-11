@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.View;
 import android.widget.TextView;
 
 import com.projects.daniel.stackstats.adapters.UsersAdapter;
@@ -91,5 +92,10 @@ public class MainActivity extends AppCompatActivity implements AfterExecution{
     @Override
     public void onAfterExecution() {
         mUsersRecyclerView.getAdapter().notifyDataSetChanged();
+        if(mUsersList.isEmpty()) {
+            errorTextView.setVisibility(View.VISIBLE);
+        } else {
+            errorTextView.setVisibility(View.INVISIBLE);
+        }
     }
 }
