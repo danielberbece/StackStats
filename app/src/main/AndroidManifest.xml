@@ -21,6 +21,11 @@
         </activity>
         <activity android:name=".DetailsActivity"
             android:parentActivityName=".MainActivity"></activity>
+        <provider
+            android:authorities="com.projects.daniel.stackstats"
+            android:name=".data.UsersContentProvider" />
     </application>
+
+
 
 </manifest>
