@@ -1,20 +1,28 @@
 package com.projects.daniel.stackstats.adapters;
 
 import android.content.Context;
-import android.net.Uri;
+import android.content.Intent;
+import android.os.Parcel;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.projects.daniel.stackstats.DetailsActivity;
 import com.projects.daniel.stackstats.R;
 import com.projects.daniel.stackstats.models.User;
 import com.squareup.picasso.Picasso;
 
+import org.parceler.Parcels;
+
 import java.util.ArrayList;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
+import static com.projects.daniel.stackstats.DetailsActivity.INTENT_OBJECT_KEY;
 
 /**
  * Created by Daniel on 3/11/2018.
@@ -24,12 +32,10 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
 
     private Context context;
     private ArrayList<User> users;
-    private View.OnClickListener onClickListener;
 
-    public UsersAdapter(Context context, ArrayList<User> users, View.OnClickListener onClickListener) {
+    public UsersAdapter(Context context, ArrayList<User> users) {
         this.context = context;
         this.users = users;
-        this.onClickListener = onClickListener;
     }
 
     @Override
@@ -44,6 +50,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
     @Override
     public void onBindViewHolder(UserViewHolder holder, int position) {
         User currentUser = users.get(position);
+        holder.user = currentUser;
         holder.usernameTextView.setText(currentUser.getName());
 
         Picasso.with(context)
@@ -60,17 +67,31 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.UserViewHold
         return users.size();
     }
 
-    public class UserViewHolder extends RecyclerView.ViewHolder {
+    public void setUsers(ArrayList<User> users) {
+        this.users.clear();
+        this.users.addAll(users);
+        notifyDataSetChanged();
+    }
 
+    public class UserViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+
+        User user;
+        @BindView(R.id.list_item_user_image_view)
         ImageView userImageView;
+        @BindView(R.id.list_item_user_name_text_view)
         TextView usernameTextView;
 
         public UserViewHolder(View itemView) {
             super(itemView);
+            ButterKnife.bind(this, itemView);
+            itemView.setOnClickListener(this);
+        }
 
-            userImageView = itemView.findViewById(R.id.list_item_user_image_view);
-            usernameTextView = itemView.findViewById(R.id.list_item_user_name_text_view);
-            itemView.setOnClickListener(onClickListener);
+        @Override
+        public void onClick(View v) {
+            Intent detailActivityIntent = new Intent(context, DetailsActivity.class);
+            detailActivityIntent.putExtra(INTENT_OBJECT_KEY, Parcels.wrap(user));
+            context.startActivity(detailActivityIntent);
         }
     }
 }
